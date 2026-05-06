@@ -22,9 +22,11 @@ namespace Rasterizer
 	// \brief	Free the memory allocated in the function above. 
 	void FrameBuffer::Delete()
 	{
-		delete [] frameBuffer;
-		frameBufferWidth = 0;
-		frameBufferHeight = 0;
+		if (frameBuffer != NULL)
+		{
+			delete [] frameBuffer;
+			frameBuffer = nullptr;
+		}
 	}
 
 	// ---------------------------------------------------------------------------
@@ -33,7 +35,8 @@ namespace Rasterizer
 	// \brief	Allocate memory for the frame buffer given by the width and height. 
 	bool FrameBuffer::Allocate(unsigned int width, unsigned int height)
 	{
-		frameBuffer = new unsigned char[width * height];
+		Delete();
+		frameBuffer = new unsigned char[width * height * COLOR_COMP];
 		frameBufferWidth = width;
 		frameBufferHeight = height;
 		return true;
@@ -109,13 +112,7 @@ namespace Rasterizer
 	// \brief	Sets the entire frame buffer to the provided color.
 	void FrameBuffer::Clear(const Color & c)
 	{
-
-
-
-
-
-
-
+		Clear(c.r*255.0f,c.g * 255.0f,c.b * 255.0f,c.a * 255.0f);
 
 	}
 
@@ -125,6 +122,23 @@ namespace Rasterizer
 	// \brief	Sets the entire frame buffer to the provided color in rgb format
 	void FrameBuffer::Clear(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 	{
+		int max = frameBufferHeight * frameBufferWidth * COLOR_COMP;
+		for (int itr=0; itr < max ; itr += COLOR_COMP)
+		{
+			frameBuffer[itr + 0] = r;
+			frameBuffer[itr + 1] = g;
+			frameBuffer[itr + 2] = b;
+			frameBuffer[itr + 3] = a;
+
+
+		}
+
+
+
+
+
+
+
 
 	}
 
@@ -134,6 +148,18 @@ namespace Rasterizer
 	// \brief	Sets the pixel at position x, y to the provided color. 
 	void FrameBuffer::SetPixel(unsigned int x, unsigned int y, unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 	{
+		//Sanity check
+		if (x>= frameBufferWidth || y>= frameBufferHeight)
+		{
+			return;
+		}
+		int index = (x + y * frameBufferWidth)* COLOR_COMP;
+		frameBuffer[index + 0] = r;
+		frameBuffer[index + 1] = g;
+		frameBuffer[index + 2] = b;
+		frameBuffer[index + 3] = a;
+
+
 
 	}
 
@@ -143,6 +169,17 @@ namespace Rasterizer
 	// \brief	Sets the pixel at position x, y to the provided color. 
 	void FrameBuffer::SetPixel(unsigned int x, unsigned int y, const Color& c)
 	{
+		SetPixel(x,
+			y,
+			c.r * 255.0f,
+			c.g * 255.0f,
+			c.b * 255.0f,
+			c.a * 255.0f);
+
+
+
+
+
 
 	}
 
@@ -151,8 +188,19 @@ namespace Rasterizer
 	// \fn		GetPixel
 	// \brief	Returns the color of the pixel at position x, y.
 	Color FrameBuffer::GetPixel(unsigned int x, unsigned int y)
-	{		
-		return {};
+	{
+		//Sanity check
+		if (x >= frameBufferWidth || y >= frameBufferHeight)
+		{
+			return Color();
+		}
+		int index = (x + y * frameBufferWidth) * COLOR_COMP;
+		Color c;
+		c.r = frameBuffer[index];
+		c.g = frameBuffer[index + 1]/255.0f;
+		c.b = frameBuffer[index + 2] / 255.0f;
+		c.a = frameBuffer[index + 3] / 255.0f;
+		return c;
 	}
 
 	// ---------------------------------------------------------------------------
@@ -241,7 +289,8 @@ namespace Rasterizer
 	// \brief	Clear frame buffer to a checkerboard pattern.
 	void FrameBuffer::ClearCheckerboard(Color colors[2], unsigned int size)
 	{
-
+		Clear(colors[0]);
+		//COLOR_COMP*2 and jump each square default is black
 	}
 
 	// ---------------------------------------------------------------------------
