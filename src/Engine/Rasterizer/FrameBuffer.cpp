@@ -22,7 +22,9 @@ namespace Rasterizer
 	// \brief	Free the memory allocated in the function above. 
 	void FrameBuffer::Delete()
 	{
-
+		delete [] frameBuffer;
+		frameBufferWidth = 0;
+		frameBufferHeight = 0;
 	}
 
 	// ---------------------------------------------------------------------------
@@ -31,6 +33,9 @@ namespace Rasterizer
 	// \brief	Allocate memory for the frame buffer given by the width and height. 
 	bool FrameBuffer::Allocate(unsigned int width, unsigned int height)
 	{
+		frameBuffer = new unsigned char[width * height];
+		frameBufferWidth = width;
+		frameBufferHeight = height;
 		return true;
 	}
 
@@ -77,7 +82,7 @@ namespace Rasterizer
 	// \brief	Returns the pointer to the frame buffer variable
 	unsigned char *	FrameBuffer::GetBufferData()
 	{
-		return {};
+		return frameBuffer;
 	}
 
 	// ---------------------------------------------------------------------------
@@ -86,7 +91,7 @@ namespace Rasterizer
 	// \brief	Returns the width of the frame buffer.
 	unsigned int		FrameBuffer::GetWidth()
 	{
-		return {};
+		return frameBufferWidth;
 	}
 
 	// ---------------------------------------------------------------------------
@@ -95,7 +100,7 @@ namespace Rasterizer
 	// \brief	Returns the height of the frame buffer.
 	unsigned int		FrameBuffer::GetHeight()
 	{
-		return {};
+		return frameBufferWidth;
 	}
 
 	// ---------------------------------------------------------------------------
@@ -104,6 +109,13 @@ namespace Rasterizer
 	// \brief	Sets the entire frame buffer to the provided color.
 	void FrameBuffer::Clear(const Color & c)
 	{
+
+
+
+
+
+
+
 
 	}
 
